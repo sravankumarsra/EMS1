@@ -66,6 +66,12 @@
             <configuration>
                 <!-- Set the Web Application Name -->
                 <warName>my-web-app</warName>
+		<webResources>
+                    <resource>
+                        <directory>src/main/webapp/WEB-INF</directory>
+                        <targetPath>WEB-INF</targetPath>
+                    </resource>
+                </webResources>
             </configuration>
         </plugin>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
