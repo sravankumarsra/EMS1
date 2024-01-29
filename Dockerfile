@@ -5,8 +5,7 @@ FROM tomcat:9.0-jdk11-openjdk-slim
 ENV CATALINA_HOME /usr/local/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
 
-# Remove the default Tomcat applications
-RUN rm -rf $CATALINA_HOME/webapps/*
+WORKDIR $CATALINA_HOME/webapps
 
 # Copy your WAR file into the webapps directory
 COPY target/EMS-0.0.1-SNAPSHOT.war $CATALINA_HOME/webapps/
