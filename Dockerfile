@@ -12,7 +12,7 @@ RUN rm -rf $CATALINA_HOME/webapps/*
 COPY target/EMS-API-SpringJPAData-Hibernate-MySQL-0.0.1-SNAPSHOT.war $CATALINA_HOME/webapps/
 
 # Expose the default Tomcat port
-EXPOSE 8080
+EXPOSE 8090
 
 # Start Tomcat
 CMD ["catalina.sh", "run"]
