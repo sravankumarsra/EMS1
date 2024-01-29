@@ -1,5 +1,5 @@
 # Use the official Tomcat image as the base image
-FROM tomcat:9.0-jdk11-openjdk-slim
+FROM tomcat:9
 
 # Set environment variables
 ENV CATALINA_HOME /usr/local/tomcat
