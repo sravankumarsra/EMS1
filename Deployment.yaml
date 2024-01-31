@@ -20,17 +20,4 @@ spec:
         ports:
         - containerPort: 8090
 
----        
 
-apiVersion: app/v1
-kind: Service
-metadata:
-  name: app-v1-service
-spec:
-  selector:
-    app: app-v1
-  ports:
-  - protocol: TCP
-    port: 8090
-    nodeport: 30001
-  type: nodeport
