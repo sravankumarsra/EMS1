@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-deployment1
+  labels:
+    app: app-v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-v1
+  template:
+    metadata:
+      labels:
+        app: app-v1
+    spec:
+      containers:
+      - name: container1
+        image: varakumar/mytomcat:latest
+        ports:
+        - containerPort: 8090
+
+apiVersion: app/v1
+kind: Service
+metadata:
+  name: tomcat-deployment1
+spec:
+  selector:
+    app: app-v1
+  ports:
+  - name: name-of-service-port
+    protocol: TCP
+    port: 8090
+    nodeport: 30001
+  type: nodeport
