@@ -30,8 +30,7 @@ spec:
   selector:
     app: app-v1
   ports:
-  - name: name-of-service-port
-    protocol: TCP
+  - protocol: TCP
     port: 8090
     nodeport: 30001
   type: nodeport
