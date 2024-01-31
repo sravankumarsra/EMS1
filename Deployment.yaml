@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: container1
-        image: chaitanyaveeksha/chaituthippu12345:tagname
+        image: chaitanyaveeksha/chaituthippu12345:latest
         ports:
         - containerPort: 8090
 
