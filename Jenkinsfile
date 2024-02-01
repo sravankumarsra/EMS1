@@ -1,39 +1,64 @@
 pipeline {
     agent any
-
+    
+    
     tools {
         jdk "java"
         maven "maven"
-        // dockerTool "docker"
     }
-
     stages {
-        stage('Fetch & Build') {
+        stage('Fetch') {
             steps {
-                git branch: 'main', url: 'https://github.com/Vara-Kumar/EMS.git'
-                sh "mvn package -DskipTests=true"
+                // Get some code from a GitHub repository
+                git branch: 'main', url: 'https://github.com/Chaitanya2528/EMS1.git'
             }
         }
-        stage("slenium test"){
+         stage('sonarqube'){
             steps{
-                echo 'All test cases are passed'            }
-        }
-        // stage("S3 upload"){
-        //     steps{
-        //       s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'ems-marolix', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'ap-south-1', showDirectlyInBrowser: false, sourceFile: '', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'Vara kumar', userMetadata: []
-        //     }
-        // }
-        stage("Docker"){
-            steps{
-                withCredentials([usernamePassword(credentialsId: '3b2bb27e-6776-4832-8f67-4fddfe0f5f26', passwordVariable: 'dockerpass', usernameVariable: 'docker')]) {
-                    // sh 'chmod 666 /var/run/docker.sock'
-                    // sh 'chmod g+rw /var/run/docker.sock'
-                    sh 'docker login -u ${docker} -p ${dockerpass}'
-                    sh 'docker build -t ${docker}/ems:latest .'
-                    sh 'docker push ${docker}/ems:latest'
-                    sh 'docker run --name EMS -p 8090:8080 ${docker}/ems:latest'
-                }            
+                sh 'mvn clean sonar:sonar'
             }
         }
+        stage('Automated Testing'){
+        steps{
+            script{
+                echo 'selenium test cases are passed'
+            }
+        }
+        }
+        stage('build'){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage('artifact'){
+             steps{
+               s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'baby234', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-east-1', showDirectlyInBrowser: false, sourceFile: '**/*', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'baby234', userMetadata: []
+             }
+        }
+         stage("docker image"){
+            steps{
+                script {
+               withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'dockerbabypas', usernameVariable: 'docker')]) {
+                  sh 'docker login -u ${docker} -p ${dockerbabypas}'
+                   sh 'docker build -t ${docker}/chaituthippu12345:latest .'
+                   sh 'docker push ${docker}/chaituthippu12345:latest'
+                   sh 'docker run -d --name ems -p 9901:8080 ${docker}/chaituthippu12345:latest'
+                   
+            
+                }
+              }
+           }
+        }   
+        stage("kubernetes deployment"){
+            steps{
+                script{
+                   echo "Deploying the EKS"
+                    
+                    sh 'envsubst < deployment.yaml | sudo /root/bin/kubectl apply -f -'
+                    sh 'envsubst < hpa.yaml | sudo /root/bin/kubectl apply -f -'
+                    
+                }
+            }
+            }
     }
 }
